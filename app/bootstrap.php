@@ -24,6 +24,15 @@ require(APP_PATH.DIRECTORY_SEPARATOR.'config.php');
 \App\Config::loadEnv();
 
 /*
+ * Chama o config da aplicação
+ */
+require(APP_PATH.DIRECTORY_SEPARATOR.'database.php');
+
+\App\Database::getInstance();
+
+exit();
+
+/*
  * Chama o autoloder da aplicação
  */
 require(APP_PATH.DIRECTORY_SEPARATOR.'autoload.php');
