@@ -1,4 +1,10 @@
 <?php
+/**
+ * Autoloader da aplicação, responsável por requisitar
+ * os arquivos correspondentes a cada classe na Model
+ *
+ * @author Joubert <eu@redrat.com.br>
+ */
 
 namespace App;
 

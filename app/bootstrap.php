@@ -1,4 +1,9 @@
 <?php
+/**
+ * Inicia a aplicação, definindo variáveis, parametros e chamadas
+ *
+ * @author Joubert <eu@redrat.com.br>
+ */
 
 namespace App;
 
@@ -19,3 +24,8 @@ require(APP_PATH.DIRECTORY_SEPARATOR.'autoload.php');
  * Chama o router da aplicação
  */
 require(APP_PATH.DIRECTORY_SEPARATOR.'router.php');
+
+/*
+ * Chama o router da aplicação
+ */
+require(APP_PATH.DIRECTORY_SEPARATOR.'view.php');
