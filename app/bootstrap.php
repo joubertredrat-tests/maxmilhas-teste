@@ -15,6 +15,8 @@ define('CONFIG_PATH', APP_PATH.DIRECTORY_SEPARATOR.'conf');
 define('MODEL_PATH', APP_PATH.DIRECTORY_SEPARATOR.'model');
 define('CONTROLLER_PATH', APP_PATH.DIRECTORY_SEPARATOR.'controller');
 define('VIEW_PATH', APP_PATH.DIRECTORY_SEPARATOR.'view');
+define('LOG_PATH', APP_PATH.DIRECTORY_SEPARATOR.'logs');
+define('STORE_PATH', APP_PATH.DIRECTORY_SEPARATOR.'store');
 
 /*
  * Chama o config da aplicação
@@ -27,10 +29,6 @@ require(APP_PATH.DIRECTORY_SEPARATOR.'config.php');
  * Chama o config da aplicação
  */
 require(APP_PATH.DIRECTORY_SEPARATOR.'database.php');
-
-\App\Database::getInstance();
-
-exit();
 
 /*
  * Chama o autoloder da aplicação
@@ -46,4 +44,3 @@ require(APP_PATH.DIRECTORY_SEPARATOR.'router.php');
  * Chama o router da aplicação
  */
 require(APP_PATH.DIRECTORY_SEPARATOR.'view.php');
-
