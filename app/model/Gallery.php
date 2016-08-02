@@ -1,6 +1,6 @@
 <?php
 /**
- * Classe de manipulação dos usuários do app
+ * Classe de manipulação das galerias do app, bem como as pastas relacionadas
  *
  * @author Joubert <eu@redrat.com.br>
  */
@@ -9,38 +9,31 @@ namespace App;
 
 use \PDO;
 
-class User
+class Gallery
 {
     /**
-     * User's identificator.
+     * Gallery's identificator.
      *
      * @var integer
      */
     private $id;
 
     /**
-     * User's username.
+     * Gallery's name.
      *
      * @var string
      */
-    private $username;
+    private $name;
 
     /**
-     * User's password.
-     *
-     * @var string
-     */
-    private $password;
-
-    /**
-     * User's creation date.
+     * Gallery's creation date.
      *
      * @var datetime
      */
     private $create_date;
 
     /**
-     * User's update date.
+     * Gallery's update date.
      *
      * @var datetime
      */
@@ -54,31 +47,35 @@ class User
     private $new = true;
 
     /**
+     * Prefixo da pasta de galeria
+     */
+    const FOLDER_PREFIX = 'gallery_';
+
+    /**
      * Método constutor da classe responsável por popular o objeto de acordo com a
      * chave identificadora do registro informado no parametro ou a criação de um
      * objeto vazio.
      *
-     * @param integer id User's identificator.
+     * @param integer id Gallery's identificator.
      * @return void
      */
     public function __construct($id = null)
     {
          if (filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
                 $dbh = \App\Database::getInstance();
-                $stmt = $dbh->prepare('SELECT * FROM users WHERE id = :id');
+                $stmt = $dbh->prepare('SELECT * FROM galleries WHERE id = :id');
                 $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
                 $stmt->execute();
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if (count($rows) != 1) {
                     throw new \App\Exception(
-                        'Ocorreu um erro durante a consulta na tabela "users", a chave identificadora é inválida: "'.$id.'".'
+                        'Ocorreu um erro durante a consulta na tabela "galleries", a chave identificadora é inválida: "'.$id.'".'
                     );
                 }
 
                 $this->id = $id;
-                $this->username = $rows[0]['username'];
-                $this->password = $rows[0]['password'];
+                $this->name = $rows[0]['name'];
                 $this->create_date = $rows[0]['create_date'];
                 $this->update_date = $rows[0]['update_date'];
                 $this->new = false;
@@ -102,23 +99,14 @@ class User
     public function __set($attribute, $value)
     {
         switch ($attribute) {
-            case 'username':
-                if (preg_match('/[^A-Za-z0-9]/i', $value)) {
-                    throw new \App\Exception(
-                        'Atributo '.$attribute.' da classe '.__CLASS__.' só aceita caracteres alphanuméricos'
-                    ); 
-                }
-
-                $this->username = $value;
-                break;
-            case 'password':
+            case 'name':
                 if (!\App\Functions::validateType($value, 'string')) {
                     throw new \App\Exception(
                         \App\Exception::getMsgClassWrongTypeAttr(__CLASS__, $attribute, $value, 'string')
                     );
                 }
 
-                $this->password = self::passwordHash($value, PASSWORD_DEFAULT);
+                $this->name = $value;
                 break;            
             default:
                 throw new \App\Exception('Atributo '.$attribute.' desconhecido da classe '.__CLASS__);
@@ -136,9 +124,7 @@ class User
     public function __get($attribute)
     {
         switch ($attribute) {
-            case 'id':
-            case 'username':
-            case 'password':
+            case 'name':
             case 'create_date':
             case 'update_date':
                 return $this->$attribute;
@@ -166,15 +152,16 @@ class User
      */
     private function insert()
     {
-        $query = 'INSERT INTO users (username, password) VALUES (:username, :password)';
+        $query = 'INSERT INTO galleries (name) VALUES (:name)';
 
         $dbh = \App\Database::getInstance();
         $stmt = $dbh->prepare($query);
-        $stmt->bindValue(':username', $this->username, \PDO::PARAM_STR);
-        $stmt->bindValue(':password', $this->password, \PDO::PARAM_STR);
+        $stmt->bindValue(':name', $this->name, \PDO::PARAM_STR);
         $stmt->execute();
 
         $this->id = $dbh->lastInsertId();
+
+        $this->createFolder();
     }
 
     /**
@@ -184,61 +171,64 @@ class User
      */
     private function update()
     {
-        $query = 'UPDATE users SET password = :password WHERE id = :id';
+        $query = 'UPDATE galleries SET name = :name WHERE id = :id';
 
         $dbh = \App\Database::getInstance();
         $stmt = $dbh->prepare($query);
-        $stmt->bindValue(':password', $this->password, \PDO::PARAM_STR);
+        $stmt->bindValue(':name', $this->name, \PDO::PARAM_STR);
         $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
         $stmt->execute();
     }
 
     /**
-     * Gera uma senha em formato hash a partir de sennha em texto plano.
+     * Atualiza user no banco de dados
      *
-     * @param string $password Senha em texto plano
+     * @return void
+     */
+    public function delete()
+    {
+        $query = 'DELETE FROM galleries WHERE id = :id';
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $this->removeFolder();
+        $this->id = null;
+    }
+
+    /**
+     * Requisita o endereço absoluto de uma galeria
+     *
      * @return string
      */
-    public static function passwordHash($password)
+    public function getFolderPath()
     {
-        return password_hash($password, PASSWORD_DEFAULT);
-    }
-
-    /**
-     * Verifica se a senha plana corresponde a senha com hash
-     *
-     * @param string $password_plan Senha em texto plano
-     * @param string $password_hash Senha em formato hash
-     * @return bool
-     */
-    public static function passwordVerify($password_plan, $password_hash)
-    {
-        return password_verify($password_plan, $password_hash);
-    }
-
-    /**
-     * Autentica um usuário com um username e senha informados
-     *
-     * @param string $username usuário
-     * @param string $password senha
-     * @return Object|bool
-     */
-    public static function auth($username, $password)
-    {
-        $dbh = \App\Database::getInstance();
-        $stmt = $dbh->prepare('SELECT id, password FROM users WHERE username = :username');
-        $stmt->bindValue(':username', $username, \PDO::PARAM_STR);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($rows) != 1) {
-            return false;
+        if (!$this->id) {
+            throw new \App\Exception('Galeria não existe');
         }
+        return STORE_PATH.DIRECTORY_SEPARATOR.FOLDER_PREFIX.$this->id;
+    }
 
-        if (self::passwordVerify($password, $rows[0]['password'])) {
-            return new self($rows[0]['id']);
-        } else {
-            return false;
-        }       
+    /**
+     * Cria a pasta da galeria
+     *
+     * @return void
+     */
+    private function createFolder()
+    {
+        mkdir($this->getFolderPath());
+    }
+
+    /**
+     * Remove a pasta da galeria e todos seus arquivos
+     *
+     * @return void
+     */
+    private function removeFolder()
+    {
+        array_map('unlink', glob($this->getFolderPath().'/*.*'));
+        rmdir($this->getFolderPath());
     }
 }
