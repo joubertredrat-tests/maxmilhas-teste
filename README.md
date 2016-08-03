@@ -24,4 +24,5 @@ O aplicativo permite gestão de várias galerias, várias imagens das galerias e
 
 ##Limitações##
 
-Como não era o propósito inicial do aplicativo, não existe validações em relação ao tamanho das imagens.
+* Como não era o propósito inicial do aplicativo, não existe validações em relação ao tamanho das imagens.
+* Devido ao prazo causado pela falha de interpretação da tarefa, algumas validações de formulário não foram feitas.
