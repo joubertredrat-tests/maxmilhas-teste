@@ -84,7 +84,7 @@ class Database
     private static function buildInstance($bd_name, $bd_user, $bd_pass, $bd_host = 'localhost', $bd_port = 3306)
     {
         try {
-            $dbh = new PDO('mysql:host='.$bd_host.'; port '.$bd_port.';dbname='.$bd_name, $bd_user, $bd_pass);  
+            $dbh = new PDO('mysql:host='.$bd_host.';port='.$bd_port.';dbname='.$bd_name.';charset=utf8', $bd_user, $bd_pass);  
             $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $dbh->exec("SET CHARACTER SET utf8");
             $dbh->exec("SET NAMES utf8");
