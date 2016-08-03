@@ -58,7 +58,7 @@ class User
      * chave identificadora do registro informado no parametro ou a criação de um
      * objeto vazio.
      *
-     * @param integer id User's identificator.
+     * @param $id integer id User's identificator.
      * @return void
      */
     public function __construct($id = null)
@@ -156,7 +156,7 @@ class User
      */
     public function save()
     {
-        $this->new ? $this->add() : $this->update();
+        $this->new ? $this->insert() : $this->update();
     }
 
     /**
@@ -191,6 +191,34 @@ class User
         $stmt->bindValue(':password', $this->password, \PDO::PARAM_STR);
         $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    /**
+     * Requisita todas os usuários
+     *
+     * @return bool $object Define se será array de objetos 
+     * @return array
+     */
+    public static function getAll($object = false)
+    {
+        $query = 'SELECT '.($object ? 'id' : '*').' FROM users';
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $row) {
+            if ($object) {
+                $return[] = new self($row['id']);
+            } else {
+                $return[] = $row;
+            }
+        }
+
+        return $return;
     }
 
     /**

@@ -56,7 +56,7 @@ class Gallery
      * chave identificadora do registro informado no parametro ou a criação de um
      * objeto vazio.
      *
-     * @param integer id Gallery's identificator.
+     * @param $id integer id Gallery's identificator.
      * @return void
      */
     public function __construct($id = null)
@@ -124,6 +124,7 @@ class Gallery
     public function __get($attribute)
     {
         switch ($attribute) {
+            case 'id':
             case 'name':
             case 'create_date':
             case 'update_date':
@@ -142,11 +143,11 @@ class Gallery
      */
     public function save()
     {
-        $this->new ? $this->add() : $this->update();
+        $this->new ? $this->insert() : $this->update();
     }
 
     /**
-     * Insere user no banco de dados
+     * Insere galeria no banco de dados
      *
      * @return void
      */
@@ -165,7 +166,7 @@ class Gallery
     }
 
     /**
-     * Atualiza user no banco de dados
+     * Atualiza galeria no banco de dados
      *
      * @return void
      */
@@ -181,7 +182,7 @@ class Gallery
     }
 
     /**
-     * Atualiza user no banco de dados
+     * Remove galeria do banco de dados
      *
      * @return void
      */
@@ -194,8 +195,37 @@ class Gallery
         $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
         $stmt->execute();
 
+        $this->removeAllPhotos();
         $this->removeFolder();
         $this->id = null;
+    }
+
+    /**
+     * Requisita todas as galerias
+     *
+     * @return bool $object Define se será array de objetos 
+     * @return array
+     */
+    public static function getAll($object = false)
+    {
+        $query = 'SELECT '.($object ? 'id' : '*').' FROM galleries';
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $row) {
+            if ($object) {
+                $return[] = new self($row['id']);
+            } else {
+                $return[] = $row;
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -208,7 +238,7 @@ class Gallery
         if (!$this->id) {
             throw new \App\Exception('Galeria não existe');
         }
-        return STORE_PATH.DIRECTORY_SEPARATOR.FOLDER_PREFIX.$this->id;
+        return STORE_PATH.DIRECTORY_SEPARATOR.self::FOLDER_PREFIX.$this->id;
     }
 
     /**
@@ -230,5 +260,42 @@ class Gallery
     {
         array_map('unlink', glob($this->getFolderPath().'/*.*'));
         rmdir($this->getFolderPath());
+    }
+
+    /**
+     * Remove todas as fotos de uma galeria
+     *
+     * @return int|bool
+     */
+    private function removeAllPhotos()
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare('DELETE FROM photos WHERE galleries_id = :id');
+        $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Requisita o total de fotos de uma galeria
+     *
+     * @return int|bool
+     */
+    public function getTotalPhotos()
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare('SELECT count(*) AS total FROM photos WHERE galleries_id = :id');
+        $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return (int) $rows[0]['total'];
     }
 }
