@@ -46,7 +46,7 @@ class Session
         $_SESSION[self::SESSION_PREFIX.'auth'] = true;
         $_SESSION[self::SESSION_PREFIX.'user'] = $User->id;
 
-        //session_write_close();
+        session_write_close();
     }
 
     /**
@@ -66,7 +66,10 @@ class Session
      */
     public static function userAuth()
     {
-        return true;
-        //return isset($_SESSION[self::SESSION_PREFIX.'auth']) && $_SESSION[self::SESSION_PREFIX.'auth'];
+        session_start();
+        $return = isset($_SESSION[self::SESSION_PREFIX.'auth']) && $_SESSION[self::SESSION_PREFIX.'auth'];
+        session_write_close();
+
+        return $return;
     }
 }

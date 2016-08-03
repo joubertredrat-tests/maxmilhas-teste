@@ -1,7 +1,7 @@
 <form method="POST">
     <label for="name"> Username*</label>
     <input type="text" name="username" id="username" required>
-    <label for="name"> Senha*</label>
+    <label for="name"> Password*</label>
     <input type="password" name="password" id="password" required>
     <br />
     <input type="submit" value="Enviar">
