@@ -22,6 +22,7 @@ class View
     	if ($args) {
     		extract($args);
     	}
+        $view = str_replace('\\', '/', $view);
         require(VIEW_PATH.DIRECTORY_SEPARATOR.$view.'.php');
     }
 }

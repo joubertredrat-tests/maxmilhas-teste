@@ -42,7 +42,6 @@ class Router
 
         switch (count($uri)) {
             case 1:
-                echo 'one';
                 $class = $uri[0];
                 $method = 'index';
                 $args = null;
@@ -67,8 +66,9 @@ class Router
         }
 
         require(CONTROLLER_PATH.DIRECTORY_SEPARATOR.$class.'.php');
-        $class = "\App\\".ucfirst($class);
-
+        self::formatClassCall($class);
+        self::formatMethodCall($method);
+        
         $Controller = new $class();
         if ($args) {
             switch (count($args)) {
@@ -85,5 +85,37 @@ class Router
         } else {
             $Controller->$method();
         }
+    }
+
+    /**
+     * Formata a chamada da classe do controller
+     *
+     * @param string &$class
+     */
+    private static function formatClassCall(&$class)
+    {
+        $class = "\App\\".ucfirst($class);
+    }
+
+    /**
+     * Formata a chamada do método da classe do controller
+     *
+     * @param string &$method
+     */
+    private static function formatMethodCall(&$method)
+    {
+        $array = explode('-', $method);
+        if (count($array) == 1) {
+            return $method;
+        }
+
+        $first = array_shift($array);
+
+        $array = array_map('ucfirst', $array);
+        // array_walk($array, function(&$item) {
+        //     $item = ucfirst($item);
+        // });
+
+        $method = $first.implode('', $array);
     }
 }
