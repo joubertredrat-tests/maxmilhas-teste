@@ -1,1 +1,3 @@
+app/conf/.env
 app/logs/error.log
+app/store/*
