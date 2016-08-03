@@ -16,7 +16,7 @@ class Router
      */
     public static function getUri()
     {
-        if (!isset($_SERVER['QUERY_STRING'])) {
+        if (!isset($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING'] == "") {
             return 'index';
         }
         
