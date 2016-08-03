@@ -6,7 +6,7 @@ Este aplicativo permite gerenciar e exibir várias galerias e suas respectivas f
 ##Requisitos##
 * PHP 5.4 ou superior
 * Servidor web Apache
-* Mysql 5.5, MariaDB 10.X ou supeior
+* Mysql 5.5, MariaDB 10.X ou superior
 
 ##Instalação##
 
