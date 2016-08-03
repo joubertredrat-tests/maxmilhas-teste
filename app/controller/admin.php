@@ -9,6 +9,11 @@ namespace App;
 
 class Admin
 {
+    /**
+     * Construtor
+     *
+     * @return void
+     */
     public function __construct()
     {
         if (!\App\Session::userAuth() && strpos($_SERVER['QUERY_STRING'], 'login') === false) {
