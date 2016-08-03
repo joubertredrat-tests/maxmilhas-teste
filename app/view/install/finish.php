@@ -1,0 +1,1 @@
+<p>App instalado com sucesso, para autenticar, basta usar o usuário admin e senha admin.</p>

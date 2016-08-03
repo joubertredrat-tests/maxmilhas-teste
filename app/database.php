@@ -51,6 +51,22 @@ class Database
     }
 
     /**
+     * Requisita uma instância do PDO fora do singletion
+     *
+     * @return PDO
+     */
+    public static function getNewPdo($bd_name, $bd_user, $bd_pass, $bd_host = 'localhost', $bd_port = 3306)
+    {
+        return self::buildInstance($bd_name, $bd_user, $bd_pass, $bd_host, $bd_port);
+    }
+
+    public static function testConnection($bd_name, $bd_user, $bd_pass, $bd_host = 'localhost', $bd_port = 3306)
+    {
+        $dbh = self::getNewPdo($bd_name, $bd_user, $bd_pass, $bd_host, $bd_port);
+        return $dbh instanceof \PDO;
+    }
+
+    /**
      * Define uma instancia do PDO no singleton.
      *
      * @param PDO $dbh
@@ -90,8 +106,8 @@ class Database
             $dbh->exec("SET NAMES utf8");
 
             return $dbh;
-        } catch (PDOException $e) {
-            exit("Connection to database failed: ".$e->getMessage());
+        } catch (\PDOException $e) {
+            return false;
         }
     }
 }

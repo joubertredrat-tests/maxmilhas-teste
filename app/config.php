@@ -16,11 +16,23 @@ class Config
      */
     public static function loadEnv()
     {
-        $envfile = file(CONFIG_PATH.DIRECTORY_SEPARATOR.'.env');
+        if(self::envExist()) {
+            $envfile = file(CONFIG_PATH.DIRECTORY_SEPARATOR.'.env');
 
-        foreach ($envfile as $line) {
-            putenv(trim($line));
+            foreach ($envfile as $line) {
+                putenv(trim($line));
+            }
         }
+    }
+
+    /**
+     * Verifica se existe variáveis de ambiente
+     *
+     * @return bool
+     */
+    public static function envExist()
+    {
+        return file_exists(CONFIG_PATH.DIRECTORY_SEPARATOR.'.env');
     }
 
     /**
@@ -32,5 +44,18 @@ class Config
     public static function getValue($var)
     {
         return getenv($var);
+    }
+
+    /**
+     * Escreve um novo arquivo de variáveis de ambiente
+     *
+     * @param array $values
+     * @return void
+     */
+    public static function writeEnv(Array $values)
+    {
+        if(!self::envExist()) {
+            file_put_contents(CONFIG_PATH.DIRECTORY_SEPARATOR.'.env', implode(PHP_EOL, $values));
+        }
     }
 }

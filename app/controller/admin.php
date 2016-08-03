@@ -16,6 +16,11 @@ class Admin
      */
     public function __construct()
     {
+        if(!\App\Config::envExist()) {
+            echo 'App not installed, please run install on '.\App\Functions::getAppUrl('install');
+            exit();
+        }
+                
         if (!\App\Session::userAuth() && strpos($_SERVER['QUERY_STRING'], 'login') === false) {
             header('Location: '.\App\Functions::getAppUrl('admin/login'));
         }

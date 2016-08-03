@@ -16,7 +16,10 @@ class Display
      */
     public function __construct()
     {
-
+        if(!\App\Config::envExist()) {
+            echo 'App not installed, please run install on '.\App\Functions::getAppUrl('install');
+            exit();
+        }
     }
 
     /**
