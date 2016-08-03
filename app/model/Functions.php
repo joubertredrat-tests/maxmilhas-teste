@@ -77,6 +77,11 @@ class Functions
         return $return;
     }
 
+    /**
+     * Requisita a url da aplicação
+     *
+     * @return string
+     */
     public static function getAppUrl($uri = null)
     {
         $url = [];

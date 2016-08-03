@@ -9,6 +9,11 @@ namespace App;
 
 class Index
 {
+    /**
+     * Construtor
+     *
+     * @return void
+     */    
     public function __construct()
     {
         if(!\App\Config::envExist()) {

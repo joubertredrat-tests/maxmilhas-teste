@@ -368,6 +368,11 @@ class Photo
         $this->position = ($this->Gallery->getTotalPhotos() + 1);
     }
 
+    /**
+     * Guarda uma foto na pasta correspondente
+     *
+     * @return bool
+     */    
     private function storePhoto()
     {
         return move_uploaded_file(

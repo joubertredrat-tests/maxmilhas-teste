@@ -44,23 +44,23 @@ class PhotoView extends Photo
         }
     }
 
+    /**
+     * Verifica se a foto é a primeira da galeria
+     *
+     * @return bool
+     */  
     public function isFirst()
     {
         return $this->position == 1;
     }
 
+    /**
+     * Verifica se a foto é a última da galeria
+     *
+     * @return bool
+     */  
     public function isLast()
     {
         return $this->position == $this->Gallery->getTotalPhotos();
-    }
-
-    public function getPrevious()
-    {
-        return ($this->position - 1);
-    }
-
-    public function getNext()
-    {
-        return ($this->position + 1);
     }
 }

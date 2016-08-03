@@ -9,6 +9,11 @@ namespace App;
 
 class Install
 {
+    /**
+     * Construtor
+     *
+     * @return void
+     */    
     public function __construct()
     {
 
