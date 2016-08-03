@@ -243,8 +243,78 @@ class Photo
         $stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
         $stmt->execute();
 
-        $this->removeFolder();
+        $this->reorder();
         $this->id = null;
+    }
+
+    /**
+     * Reordena as fotos
+     *
+     * @return void
+     */
+    private function reorder()
+    {
+        $query = 'UPDATE photos SET position = position -1 WHERE position > :position';
+
+        $dbh = \App\Database::getInstance();
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':position', $this->position, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Sobe uma ordem na posição da foto
+     *
+     * @return void
+     */
+    public function upPosition()
+    {
+        $new_position = ($this->position - 1);
+
+        $dbh = \App\Database::getInstance();
+
+        $query = 'UPDATE photos SET position = 0 WHERE position = :position';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':position', $this->position, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $query = 'UPDATE photos SET position = :position WHERE position = :new_position';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':position', $this->position, \PDO::PARAM_INT);
+        $stmt->bindValue(':new_position', $new_position, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $query = 'UPDATE photos SET position = :new_position WHERE position = 0';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':new_position', $new_position, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Desce uma ordem na posição da foto
+     *
+     * @return void
+     */
+    public function downPosition()
+    {
+        $dbh = \App\Database::getInstance();
+        $new_position = $this->position + 1;
+
+        $query = 'UPDATE photos SET position = 0 WHERE position = :position';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':position', $this->position, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $query = 'UPDATE photos SET position = :position WHERE position = :new_position';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':position', $this->position, \PDO::PARAM_INT);
+        $stmt->bindValue(':new_position', $new_position, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $query = 'UPDATE photos SET position = :new_position WHERE position = 0';
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':new_position', $new_position, \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -255,7 +325,7 @@ class Photo
      */
     public static function getAll($gallery_id, $object = false)
     {
-        $query = 'SELECT '.($object ? 'id' : '*').' FROM photos WHERE galleries_id = :galleries_id';
+        $query = 'SELECT '.($object ? 'id' : '*').' FROM photos WHERE galleries_id = :galleries_id ORDER BY position ASC';
 
         $dbh = \App\Database::getInstance();
         $stmt = $dbh->prepare($query);

@@ -137,6 +137,32 @@ class Admin
     }
 
     /**
+     * Ação de ordem de foto da galeria
+     *
+     * @return void
+     */
+    public function photoUp($id)
+    {
+        $Photo = new \App\Photo($id);
+        $Photo->upPosition();
+
+        header('Location: '.\App\Functions::getAppUrl('admin/photo/'.$Photo->getGallery()->id));
+    }
+
+    /**
+     * Ação de ordem de foto da galeria
+     *
+     * @return void
+     */
+    public function photoDown($id)
+    {
+        $Photo = new \App\Photo($id);
+        $Photo->downPosition();
+
+        header('Location: '.\App\Functions::getAppUrl('admin/photo/'.$Photo->getGallery()->id));
+    }
+
+    /**
      * Ação de listagem de usuários
      *
      * @return void

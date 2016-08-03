@@ -6,8 +6,12 @@
     <li>
         <img src="<?php echo \App\Functions::getAppUrl('store/'.$Gallery::FOLDER_PREFIX.$Gallery->id.'/').$photo['filename']; ?>" style="max-width: 5%;" />
         <span title="<?php echo $photo['original_filename']; ?>"><?php echo $photo['filename']; ?></span> -
-        <a href="<?php echo \App\Functions::getAppUrl('admin/photo/'.$gallery['id']); ?>">Subir</a> | 
-        <a href="<?php echo \App\Functions::getAppUrl('admin/gallery-edit/'.$gallery['id']); ?>">Descer</a> | 
+        <?php if($photo['position'] != 1): ?>
+            <a href="<?php echo \App\Functions::getAppUrl('admin/photo-up/'.$photo['id']); ?>">Subir</a> |
+        <?php endif; ?>
+        <?php if($photo['position'] != $Gallery->getTotalPhotos()): ?>
+            <a href="<?php echo \App\Functions::getAppUrl('admin/photo-down/'.$photo['id']); ?>">Descer</a> | 
+        <?php endif; ?>
         <a href="<?php echo \App\Functions::getAppUrl('admin/photo-remove/'.$photo['id']); ?>">Remover</a>
     </li>
 <?php endforeach; ?>
