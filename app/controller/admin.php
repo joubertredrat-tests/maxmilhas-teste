@@ -21,7 +21,7 @@ class Admin
             exit();
         }
                 
-        if (!\App\Session::userAuth() && strpos($_SERVER['QUERY_STRING'], 'login') === false) {
+        if (!\App\Session::userAuth() && strpos($_SERVER['REQUEST_URI'], '/login') === false) {
             header('Location: '.\App\Functions::getAppUrl('admin/login'));
         }
     }

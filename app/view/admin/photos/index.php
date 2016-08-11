@@ -4,7 +4,7 @@
 <ul>
 <?php foreach ($photos as $photo): ?>
     <li>
-        <img src="<?php echo \App\Functions::getAppUrl('store/'.$Gallery::FOLDER_PREFIX.$Gallery->id.'/').$photo['filename']; ?>" style="max-width: 5%;" />
+        <img src="<?php echo \App\Functions::getAppUrl('display/photo/'.$photo['id']); ?>" style="max-width: 5%;" />
         <span title="<?php echo $photo['original_filename']; ?>"><?php echo $photo['filename']; ?></span> -
         <?php if($photo['position'] != 1): ?>
             <a href="<?php echo \App\Functions::getAppUrl('admin/photo-up/'.$photo['id']); ?>">Subir</a> |

@@ -63,4 +63,14 @@ class PhotoView extends Photo
     {
         return $this->position == $this->Gallery->getTotalPhotos();
     }
+
+    public function getNext()
+    {
+        return $this->position + 1;
+    }
+
+    public function getPrevious()
+    {
+        return $this->position - 1;
+    }
 }

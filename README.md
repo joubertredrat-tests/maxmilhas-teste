@@ -10,7 +10,7 @@ Este aplicativo permite gerenciar e exibir várias galerias e suas respectivas f
 
 ##Instalação##
 
-Para realizar a instalação do aplicativo, basta fazer o download do código fonte neste repositório, apontar o document root do seu servidor apache para a pasta public e acessar o endereço public conforme exemplo `http://dev.local/install`.
+Para realizar a instalação do aplicativo, basta fazer o download do código fonte neste repositório, executar pelo webserver do PHP `php -S 0.0.0.0:9000 public/index.php` e acessar o endereço public conforme exemplo `http://dev.local/install`.
 
 No navegador, informar o nome do banco de dados, usuário e senha com a permissão, clicar em enviar e pronto, seu aplicativo está instalado.
 

@@ -36,4 +36,15 @@ class Display
         $data['Gallery'] = $Gallery;
         \App\View::call('photo', $data);
     }
+
+    /**
+     * Exibe a foto
+     *
+     * @return void
+     */
+    public function photo($photo_id)
+    {
+        $Photo = new \App\Photo($photo_id);
+        $Photo->display();
+    }
 }

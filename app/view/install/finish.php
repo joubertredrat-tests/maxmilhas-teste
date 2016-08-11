@@ -1,1 +1,1 @@
-<p>App instalado com sucesso, para autenticar, basta usar o usuário admin e senha admin.</p>
+<p>App instalado com sucesso, para autenticar, basta acessar <?php echo \App\Functions::getAppUrl('admin'); ?> e usar o usuário admin e senha admin.</p>

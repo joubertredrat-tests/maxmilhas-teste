@@ -85,16 +85,11 @@ class Functions
     public static function getAppUrl($uri = null)
     {
         $url = [];
-        $url[] = $_SERVER['REQUEST_SCHEME'];
+        $url[] = 'http';
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             $url[] = 's';
         }
-        $url[] = '://'.$_SERVER['HTTP_HOST'];
-        if ($_SERVER['SERVER_PORT'] != '80') {
-            $url[] = ':'.$_SERVER['SERVER_PORT'].'/';
-        }
-        $url[] = str_replace($_SERVER['QUERY_STRING'] ? $_SERVER['QUERY_STRING'] : '', '', $_SERVER['REQUEST_URI']);
-        $url[] = '/';
+        $url[] = '://'.$_SERVER['HTTP_HOST'].'/';
         if ($uri) {
             $url[] = $uri;
         }

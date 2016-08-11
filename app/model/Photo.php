@@ -380,4 +380,15 @@ class Photo
             $this->Gallery->getFolderPath().'/'.$this->filename
         );
     }
+
+    /**
+     * Exibe a imagem
+     *
+     * @return void
+     */
+    public function display()
+    {
+        header('Content-type: '.mime_content_type($this->Gallery->getFolderPath().'/'.$this->filename));
+        readfile($this->Gallery->getFolderPath().'/'.$this->filename);        
+    }
 }

@@ -16,11 +16,11 @@ class Router
      */
     public static function getUri()
     {
-        if (!isset($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING'] == "") {
+        if (!isset($_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI'] == '/') {
             return 'index';
         }
         
-        $uri = substr($_SERVER['QUERY_STRING'], 1);
+        $uri = substr($_SERVER['REQUEST_URI'], 1);
 
         if (substr($uri, strlen($uri) - 1) == '/') {
             $uri = substr($uri, 0, strlen($uri) - 1);
